@@ -37,6 +37,7 @@ argument-hint: "<project_name>" "<python_version>"
 将创建以下内容：
 - venv/（Python 虚拟环境）
 - requirements.txt / requirements-dev.txt
+- .gitignore
 - CLAUDE.md
 - constitution.md（如不存在）
 - specs/ 目录
@@ -67,7 +68,9 @@ pytest-asyncio
 
 在 `CLAUDE.md` 的环境管理章节中写明：**所有命令必须在 venv 激活状态下执行**。
 
-### 第三步：创建目录结构
+### 第三步：创建目录结构和 .gitignore
+
+创建目录：
 
 ```
 specs/                    # 所有功能规格
@@ -80,6 +83,36 @@ tests/
   rules/
     testing.md            # 测试规范（如不存在则从模板创建）
 ```
+
+创建 `.gitignore`：
+
+```gitignore
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 测试 & 覆盖率
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 环境变量
+.env
+.env.*
+
+# 系统
+.DS_Store
+Thumbs.db
+```
+
+`.gitignore` 已存在时跳过，不覆盖。
 
 ### 第四步：生成 CLAUDE.md
 
@@ -179,6 +212,7 @@ pip freeze | grep {package} >> requirements.txt
   src/
   tests/unit/ integration/ e2e/
   specs/
+  .gitignore
   CLAUDE.md
   .claude/rules/testing.md
   constitution.md（如为新建）
