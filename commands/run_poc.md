@@ -8,7 +8,11 @@ parameters:
   - name: hypothesis
     description: 需要验证的技术假设（例如：SQLite 在并发写入场景下是否满足性能要求）
     required: true
+  - name: slug
+    description: hypothesis 的 kebab-case 缩写，用于目录命名（例如：sqlite-concurrent-write）。由 AI 根据 hypothesis 自动生成，无需用户提供。
+    required: false
 outputs:
+  - specs/{module}/poc/{slug}/poc_plan.md
   - specs/{module}/poc/{slug}/result.md
 ---
 
@@ -24,18 +28,43 @@ outputs:
 
 ## 执行流程
 
-### 第一步：输出验证方案，等待确认
+### 第一步：将验证方案写入 poc_plan.md，等待确认
+
+根据 hypothesis 生成验证方案，写入 `specs/{module}/poc/{slug}/poc_plan.md`：
+
+```markdown
+# POC 验证方案
+
+**假设**：{hypothesis}
+
+## 验证维度
+
+列出要测量/观察的指标，例如：响应时间、内存占用、错误率
+
+## 验证方式
+
+描述将写什么最小复现代码（不超过 3 个文件），以及运行方式
+
+## 成功标准
+
+明确的数值或行为，例如：P99 < 100ms
+
+## 失败标准
+
+明确的数值或行为
+
+## 环境依赖
+
+若需要特定环境（数据库、中间件等），说明将使用 Dockerfile / docker-compose.yml
+```
+
+文件写入后，在终端提示用户：
 
 ```
-待验证假设：{hypothesis}
-验证方案：
-- 验证维度：[列出要测量/观察的指标，例如：响应时间、内存占用、错误率]
-- 最小复现代码：[描述将写什么，不超过 3 个文件]
-- 成功标准：[明确的数值或行为，例如：P99 < 100ms]
-- 失败标准：[明确的数值或行为]
+POC 验证方案已写入 specs/{module}/poc/{slug}/poc_plan.md，请确认后继续。
 ```
 
-等待用户确认后继续。
+**等待用户确认后再执行第二步。**
 
 ### 第二步：执行验证
 
