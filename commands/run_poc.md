@@ -11,8 +11,11 @@ parameters:
   - name: slug
     description: hypothesis 的 kebab-case 缩写，用于目录命名（例如：sqlite-concurrent-write）。由 AI 根据 hypothesis 自动生成，无需用户提供。
     required: false
+  - name: poc_plan
+    description: 已有的 poc_plan.md 文件路径。提供此参数时跳过第一步，直接执行验证。
+    required: false
 outputs:
-  - specs/{module}/poc/{slug}/poc_plan.md
+  - specs/{module}/poc/{slug}/poc_plan.md  # 仅在未提供 poc_plan 参数时生成
   - specs/{module}/poc/{slug}/result.md
 ---
 
@@ -27,6 +30,8 @@ outputs:
 **必须以子代理（subagent）方式运行**，避免 POC 过程中的代码、日志、中间输出污染主对话上下文。主对话只接收最终的 `result.md` 结论。
 
 ## 执行流程
+
+> 若传入了 `poc_plan` 参数，跳过第一步，直接从第二步开始执行。
 
 ### 第一步：将验证方案写入 poc_plan.md，等待确认
 
