@@ -63,13 +63,22 @@ outputs:
 若需要特定环境（数据库、中间件等），说明将使用 Dockerfile / docker-compose.yml
 ```
 
-文件写入后，在终端提示用户：
+文件写入后，使用 `AskUserQuestion` 工具向用户展示 POC 方案摘要并提供选项：
 
-```
-POC 验证方案已写入 specs/{module}/poc/{slug}/poc_plan.md，请确认后继续。
+```yaml
+question: "POC 验证方案已写入 {file_path}，请选择下一步操作"
+options:
+  - label: "方案可行，立即执行验证"
+    description: "确认 POC 方案无误，继续执行第二步验证"
+  - label: "需要修改方案"
+    description: "方案需要调整，请描述修改意见，修改后再次确认"
+  - label: "取消验证"
+    description: "此 POC 不需要执行，直接返回"
 ```
 
-**等待用户确认后再执行第二步。**
+- 若用户选择"方案可行，立即执行验证"，继续执行第二步
+- 若用户选择"需要修改方案"，根据反馈修改 `poc_plan.md` 后再次询问，直至用户确认或取消
+- 若用户选择"取消验证"，停止执行并返回
 
 ### 第二步：执行验证
 
